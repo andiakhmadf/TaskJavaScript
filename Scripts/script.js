@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
         document.querySelector("#candidate").textContent = playerList[selectedPlayer].name;
         
         buttonAnswer.addEventListener("click",function (event) {
+            event.preventDefault();
             document.querySelector(".sentence").style.display = "none";
             buttonAnswer.style.display = "none";
             questionText.style.display = "block";
@@ -50,6 +51,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
         });
 
         correct.addEventListener("click",function (event) {
+            event.preventDefault();
             playerList[selectedPlayer].answer = "correct";
             var passedPlayer = playerList[selectedPlayer];
             answeredPlayerList.push(passedPlayer);
@@ -68,6 +70,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
         });
 
         wrong.addEventListener("click",function (event) {
+            event.preventDefault();
             playerList[selectedPlayer].answer = "wrong";
             var passedPlayer = playerList[selectedPlayer];
             answeredPlayerList.push(passedPlayer);
