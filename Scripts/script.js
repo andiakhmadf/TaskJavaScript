@@ -1,9 +1,4 @@
 document.addEventListener("DOMContentLoaded",function(event) {
-    var playerList = [];
-    var answeredPlayerList = [];
-    var questionList = [];
-    var answerId = 0;
-    
     function addPlayer(playerList) {
         checkAddPlayer = confirm("Apakah anda ingin menambahkan pemain? ");
         if (checkAddPlayer == true) {
@@ -15,7 +10,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
             playerList.push(player);
             addPlayer(playerList);
         }
-    }
+    };
 
     function countTimer(timerSelector,setTimer) {
         revert();
@@ -37,7 +32,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
             ulPending.appendChild(liPending);
         }
         pendingList.appendChild(ulPending);
-    }
+    };
 
     function questionBegin() {
         popUp.style.display = "block";
@@ -52,6 +47,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
             correct.style.display = "inline-block";
             wrong.style.display = "inline-block";
             questionText.textContent = questionList[questionNumber];
+            event.stopPropagation();
         });
 
         correct.addEventListener("click",function (event) {
@@ -65,6 +61,11 @@ document.addEventListener("DOMContentLoaded",function(event) {
             document.querySelector(".left-container ul").children[selectedPlayer].remove();
             answerId ++;
             questionList.splice(questionNumber,1);
+            event.stopPropagation();
+            localStorage.setItem("playerList", JSON.stringify(playerList));
+            localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
+            localStorage.setItem("answerID",JSON.stringify(answerId));
+            localStorage.setItem("questionList",JSON.stringify(questionList));
             startGame();
         });
 
@@ -79,6 +80,11 @@ document.addEventListener("DOMContentLoaded",function(event) {
             document.querySelector(".left-container ul").children[selectedPlayer].remove();
             answerId ++;
             questionList.splice(questionNumber,1);
+            event.stopPropagation();
+            localStorage.setItem("playerList",JSON.stringify(playerList));
+            localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
+            localStorage.setItem("answerID",JSON.stringify(answerId));
+            localStorage.setItem("questionList",JSON.stringify(questionList));
             startGame();
         });
     };
@@ -91,12 +97,32 @@ document.addEventListener("DOMContentLoaded",function(event) {
         questionText.style.display = "none";
         correct.style.display = "none";
         wrong.style.display = "none";
-    }
+    };
 
     function rightList() {
         var passedList = document.querySelector(".right-container");
         var ulPassed = document.createElement("ul");
         passedList.appendChild(ulPassed);
+    };
+
+    function loadList(playerList,answeredPlayerList) {
+        var pendingList = document.querySelector(".left-container");
+        var ulPending = document.createElement('ul');
+        for (let index = 0; index < playerList.length; index++) {
+            var liPending = document.createElement('li');
+            liPending.textContent = playerList[index].name;
+            ulPending.appendChild(liPending);
+        }
+        pendingList.appendChild(ulPending);
+        
+        var passedList = document.querySelector(".right-container");
+        var ulPassed = document.createElement('ul');
+        for (let index = 0; index < answeredPlayerList.length; index++) {
+            var liPassed = document.createElement('li');
+            liPassed.textContent = answeredPlayerList[index].name;
+            ulPassed.appendChild(liPassed);
+        }
+        passedList.appendChild(liPassed);
     }
 
     function startGame() {
@@ -104,20 +130,38 @@ document.addEventListener("DOMContentLoaded",function(event) {
             countTimer(timerSelector,setTimer);
         }else{
             popUp.style.display = "none";
+            answerID = 0;
             alert("Game Over!");
         }
         
-    }
+    };
 
     var checkOldList = confirm('Apakah anda ingin melanjutkan list lama? ');
-    if (checkOldList == true) {
-        
+    if (checkOldList == true && typeof (Storage) != undefined) {
+        var setTimer = localStorage.getItem("setTimer");
+        var playerList =  JSON.parse(localStorage.getItem("playerList") || []) ;
+        var answeredPlayerList = JSON.parse(localStorage.getItem("answeredPlayerList") || []);
+        var answerID = JSON.parse(localStorage.getItem("answerID") || []);
+        var questionList = JSON.parse(localStorage.getItem("questionList") || []);
+        var timerSelector = document.querySelector("#seconds-left");
+        var questionText = document.querySelector("#question");
+        var correct =document.querySelector("#correct-button");
+        var wrong = document.querySelector("#wrong-button");
+        var buttonAnswer = document.querySelector("#begin-button");
+        var popUp = document.querySelector(".modal-wrapper");
+        loadList(playerList,answeredPlayerList);
+        startGame();
     }
     else{
+        var playerList = [];
+        var answeredPlayerList = [];
+        var questionList = [];
+        var answerId = 0;
         rightList();
         alert("Please enter all candidates name one by one into the prompt window after");
         addPlayer(playerList);
         var setTimer = prompt("How many seconds do you wish to set your timer?");
+        localStorage.setItem("setTimer",setTimer);
         addList();
         for (let index = 0; index < playerList.length; index++) {
             questionList.push("Question "+index);
