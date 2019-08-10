@@ -47,7 +47,6 @@ document.addEventListener("DOMContentLoaded",function(event) {
             correct.style.display = "inline-block";
             wrong.style.display = "inline-block";
             questionText.textContent = questionList[questionNumber];
-            event.stopPropagation();
         });
 
         correct.addEventListener("click",function (event) {
@@ -56,15 +55,14 @@ document.addEventListener("DOMContentLoaded",function(event) {
             answeredPlayerList.push(passedPlayer);
             playerList.splice(selectedPlayer,1);
             var liPassed = document.createElement('li');
-            liPassed.textContent = answeredPlayerList[answerId].name + " - " + answeredPlayerList[answerId].answer;
+            liPassed.textContent = answeredPlayerList[answerID].name + " - " + answeredPlayerList[answerID].answer;
             document.querySelector(".right-container ul").appendChild(liPassed);
             document.querySelector(".left-container ul").children[selectedPlayer].remove();
-            answerId ++;
+            answerID ++;
             questionList.splice(questionNumber,1);
-            event.stopPropagation();
             localStorage.setItem("playerList", JSON.stringify(playerList));
             localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
-            localStorage.setItem("answerID",JSON.stringify(answerId));
+            localStorage.setItem("answerID",JSON.stringify(answerID));
             localStorage.setItem("questionList",JSON.stringify(questionList));
             startGame();
         });
@@ -75,15 +73,14 @@ document.addEventListener("DOMContentLoaded",function(event) {
             answeredPlayerList.push(passedPlayer);
             playerList.splice(selectedPlayer,1);
             var liPassed = document.createElement('li');
-            liPassed.textContent = answeredPlayerList[answerId].name + " - " + answeredPlayerList[answerId].answer;
+            liPassed.textContent = answeredPlayerList[answerID].name + " - " + answeredPlayerList[answerID].answer;
             document.querySelector(".right-container ul").appendChild(liPassed);
             document.querySelector(".left-container ul").children[selectedPlayer].remove();
-            answerId ++;
+            answerID ++;
             questionList.splice(questionNumber,1);
-            event.stopPropagation();
             localStorage.setItem("playerList",JSON.stringify(playerList));
             localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
-            localStorage.setItem("answerID",JSON.stringify(answerId));
+            localStorage.setItem("answerID",JSON.stringify(answerID));
             localStorage.setItem("questionList",JSON.stringify(questionList));
             startGame();
         });
@@ -108,21 +105,21 @@ document.addEventListener("DOMContentLoaded",function(event) {
     function loadList(playerList,answeredPlayerList) {
         var pendingList = document.querySelector(".left-container");
         var ulPending = document.createElement('ul');
-        for (let index = 0; index < playerList.length; index++) {
+        playerList.forEach(player => {
             var liPending = document.createElement('li');
-            liPending.textContent = playerList[index].name;
+            liPending.textContent = player.name;
             ulPending.appendChild(liPending);
-        }
+        });
         pendingList.appendChild(ulPending);
         
         var passedList = document.querySelector(".right-container");
         var ulPassed = document.createElement('ul');
-        for (let index = 0; index < answeredPlayerList.length; index++) {
+        answeredPlayerList.forEach(player => {
             var liPassed = document.createElement('li');
-            liPassed.textContent = answeredPlayerList[index].name;
+            liPassed.textContent = player.name + " - " + player.answer;
             ulPassed.appendChild(liPassed);
-        }
-        passedList.appendChild(liPassed);
+        });
+        passedList.appendChild(ulPassed);
     }
 
     function startGame() {
@@ -153,10 +150,11 @@ document.addEventListener("DOMContentLoaded",function(event) {
         startGame();
     }
     else{
+        localStorage.clear();
         var playerList = [];
         var answeredPlayerList = [];
         var questionList = [];
-        var answerId = 0;
+        var answerID = 0;
         rightList();
         alert("Please enter all candidates name one by one into the prompt window after");
         addPlayer(playerList);
