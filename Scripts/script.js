@@ -16,11 +16,15 @@ document.addEventListener("DOMContentLoaded",function(event) {
         revert();
         var intervalSet = setInterval(function () {
             timerSelector.textContent = setTimer;
-            if (--setTimer < 0) {
+            --setTimer;
+            if (setTimer < 0) {
                 clearInterval(intervalSet);
-                questionBegin();
-            };
-        },1000)
+            }
+        },1000);
+
+        setTimeout(function() {
+            questionBegin()
+        },(parseInt(setTimer)*1000)*1.5);
     };
 
     function addList() {
@@ -40,18 +44,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
         var selectedPlayer = Math.floor(Math.random() * playerList.length);
         document.querySelector("#candidate").textContent = playerList[selectedPlayer].name;
         
-        buttonAnswer.addEventListener("click",function (event) {
-            event.preventDefault();
-            document.querySelector(".sentence").style.display = "none";
-            buttonAnswer.style.display = "none";
-            questionText.style.display = "block";
-            correct.style.display = "inline-block";
-            wrong.style.display = "inline-block";
-            questionText.textContent = questionList[questionNumber];
-        });
-
-        correct.addEventListener("click",function (event) {
-            event.preventDefault();
+        function benar(event) {
             playerList[selectedPlayer].answer = "correct";
             var passedPlayer = playerList[selectedPlayer];
             answeredPlayerList.push(passedPlayer);
@@ -66,11 +59,11 @@ document.addEventListener("DOMContentLoaded",function(event) {
             localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
             localStorage.setItem("answerID",JSON.stringify(answerID));
             localStorage.setItem("questionList",JSON.stringify(questionList));
-            startGame();
-        });
-
-        wrong.addEventListener("click",function (event) {
             event.preventDefault();
+            correct.removeEventListener("click",benar);
+            startGame();
+        };
+        function salah(event) {
             playerList[selectedPlayer].answer = "wrong";
             var passedPlayer = playerList[selectedPlayer];
             answeredPlayerList.push(passedPlayer);
@@ -85,8 +78,24 @@ document.addEventListener("DOMContentLoaded",function(event) {
             localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
             localStorage.setItem("answerID",JSON.stringify(answerID));
             localStorage.setItem("questionList",JSON.stringify(questionList));
+            event.preventDefault();
+            wrong.removeEventListener("click",salah);
             startGame();
+        };
+
+        buttonAnswer.addEventListener("click",function (event) {
+            event.preventDefault();
+            document.querySelector(".sentence").style.display = "none";
+            buttonAnswer.style.display = "none";
+            questionText.style.display = "block";
+            correct.style.display = "inline-block";
+            wrong.style.display = "inline-block";
+            questionText.textContent = questionList[questionNumber];
         });
+
+        correct.addEventListener("click",benar);
+
+        wrong.addEventListener("click",salah);
     };
 
     function revert() {
