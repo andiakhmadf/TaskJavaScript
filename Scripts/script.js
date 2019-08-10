@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
     };
 
     function questionBegin() {
-        popUp.style.display = "block";
+        popUp.style.display = "flex";
         var questionNumber = Math.floor(Math.random() * questionList.length);
         var selectedPlayer = Math.floor(Math.random() * playerList.length);
         document.querySelector("#candidate").textContent = playerList[selectedPlayer].name;
@@ -101,8 +101,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
     function revert() {
         document.querySelector(".sentence").style.display = "block";
         popUp.style.display = "none";
-        buttonAnswer.style.display = "block";
-        buttonAnswer.style.textAlign = "center";
+        buttonAnswer.style.display = "inline-block";
         questionText.style.display = "none";
         correct.style.display = "none";
         wrong.style.display = "none";
