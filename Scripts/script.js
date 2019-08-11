@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded",function(event) {
+    var timerSelector = document.querySelector("#seconds-left");
+    var questionText = document.querySelector("#question");
+    var correct =document.querySelector("#correct-button");
+    var wrong = document.querySelector("#wrong-button");
+    var buttonAnswer = document.querySelector("#begin-button");
+    var popUp = document.querySelector(".modal-wrapper");
+    
     function addPlayer(playerList) {
         checkAddPlayer = confirm("Apakah anda ingin menambahkan pemain? ");
         if (checkAddPlayer == true) {
@@ -19,12 +26,9 @@ document.addEventListener("DOMContentLoaded",function(event) {
             --setTimer;
             if (setTimer < 0) {
                 clearInterval(intervalSet);
+                questionBegin();
             }
         },1000);
-
-        setTimeout(function() {
-            questionBegin()
-        },(parseInt(setTimer)*1000)*1.5);
     };
 
     function addList() {
@@ -151,12 +155,6 @@ document.addEventListener("DOMContentLoaded",function(event) {
         var answeredPlayerList = JSON.parse(localStorage.getItem("answeredPlayerList") || []);
         var answerID = JSON.parse(localStorage.getItem("answerID") || []);
         var questionList = JSON.parse(localStorage.getItem("questionList") || []);
-        var timerSelector = document.querySelector("#seconds-left");
-        var questionText = document.querySelector("#question");
-        var correct =document.querySelector("#correct-button");
-        var wrong = document.querySelector("#wrong-button");
-        var buttonAnswer = document.querySelector("#begin-button");
-        var popUp = document.querySelector(".modal-wrapper");
         loadList(playerList,answeredPlayerList);
         startGame();
     }
@@ -175,12 +173,6 @@ document.addEventListener("DOMContentLoaded",function(event) {
         for (let index = 0; index < playerList.length; index++) {
             questionList.push("Question "+index);
         }
-        var timerSelector = document.querySelector("#seconds-left");
-        var questionText = document.querySelector("#question");
-        var correct =document.querySelector("#correct-button");
-        var wrong = document.querySelector("#wrong-button");
-        var buttonAnswer = document.querySelector("#begin-button");
-        var popUp = document.querySelector(".modal-wrapper");
         startGame();
     }
 });
