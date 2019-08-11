@@ -19,12 +19,9 @@ document.addEventListener("DOMContentLoaded",function(event) {
             --setTimer;
             if (setTimer < 0) {
                 clearInterval(intervalSet);
+                questionBegin();
             }
         },1000);
-
-        setTimeout(function() {
-            questionBegin()
-        },(parseInt(setTimer)*1000)*1.5);
     };
 
     function addList() {
@@ -59,8 +56,6 @@ document.addEventListener("DOMContentLoaded",function(event) {
             localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
             localStorage.setItem("answerID",JSON.stringify(answerID));
             localStorage.setItem("questionList",JSON.stringify(questionList));
-            event.preventDefault();
-            correct.removeEventListener("click",benar);
             startGame();
         };
         function salah(event) {
@@ -78,8 +73,6 @@ document.addEventListener("DOMContentLoaded",function(event) {
             localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
             localStorage.setItem("answerID",JSON.stringify(answerID));
             localStorage.setItem("questionList",JSON.stringify(questionList));
-            event.preventDefault();
-            wrong.removeEventListener("click",salah);
             startGame();
         };
 
