@@ -163,11 +163,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
         localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
         localStorage.setItem("answerID",JSON.stringify(answerID));
         localStorage.setItem("questionList",JSON.stringify(questionList));
-        var checkIndex = true;
-        if (checkIndex == true) {
-            selectedPlayer = getRandom();
-            checkIndex = false;
-        }
+        selectedPlayer = getRandom();
         startGame(selectedPlayer);
     });
 
@@ -186,11 +182,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
         localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
         localStorage.setItem("answerID",JSON.stringify(answerID));
         localStorage.setItem("questionList",JSON.stringify(questionList));
-        var checkIndex = true;
-        if (checkIndex == true) {
-            selectedPlayer = getRandom();
-            checkIndex = false;
-        }
+        selectedPlayer = getRandom();
         startGame(selectedPlayer);
     });
 
