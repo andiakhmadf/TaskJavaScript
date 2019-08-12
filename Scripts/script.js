@@ -8,14 +8,14 @@ document.addEventListener("DOMContentLoaded",function(event) {
     
     function addPlayer(playerList) {
         var playerName = /\S/;
-        checkAddPlayer = confirm("Apakah anda ingin menambahkan pemain? ");
+        checkAddPlayer = confirm("Do you wish to add new pending candidate? ");
         if (checkAddPlayer == true) {
-            var insertName = prompt("Masukkan Nama Pemain: ");
+            var insertName = prompt("Enter new candidate name: ");
             while (playerName.test(insertName) == false) {
                 if (playerName.test(insertName) == false) {
                     alert("Nama tidak boleh kosong");
                 }
-                insertName = prompt("Masukkan Nama Pemain: ");
+                insertName = prompt("Enter new candidate name: ");
             };
             var player = {
                 name : insertName,
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
     };
 
     // ---------------------------------- MAIN PROGRAM -------------------------------------------
-    var checkOldList = confirm('Apakah anda ingin melanjutkan list lama? ');
+    var checkOldList = confirm("Do you wish to continue the old list? ");
     if (checkOldList == true && typeof (Storage) != undefined) {
         var setTimer = localStorage.getItem("setTimer");
         var playerList =  JSON.parse(localStorage.getItem("playerList") || []) ;
