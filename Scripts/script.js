@@ -7,16 +7,23 @@ document.addEventListener("DOMContentLoaded",function(event) {
     var popUp = document.querySelector(".modal-wrapper");
     
     function addPlayer(playerList) {
+        var playerName = /\S/;
         checkAddPlayer = confirm("Apakah anda ingin menambahkan pemain? ");
         if (checkAddPlayer == true) {
             var insertName = prompt("Masukkan Nama Pemain: ");
+            while (playerName.test(insertName) == false) {
+                if (playerName.test(insertName) == false) {
+                    alert("Nama tidak boleh kosong");
+                }
+                insertName = prompt("Masukkan Nama Pemain: ");
+            };
             var player = {
                 name : insertName,
                 answer : ""
-            }
+            };
             playerList.push(player);
             addPlayer(playerList);
-        }
+        };
     };
 
     function countTimer(timerSelector,setTimer,selectedPlayer) {
@@ -83,7 +90,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
             ulPassed.appendChild(liPassed);
         });
         passedList.appendChild(ulPassed);
-    }
+    };
 
     function startGame(selectedPlayer) {
         if (playerList.length != 0) {
@@ -93,13 +100,12 @@ document.addEventListener("DOMContentLoaded",function(event) {
             answerID = 0;
             alert("Game Over!");
         }
-        
     };
 
     function getRandom() {
         var selectedPlayer = Math.floor(Math.random() * playerList.length);
         return selectedPlayer;
-    }
+    };
 
     // ---------------------------------- MAIN PROGRAM -------------------------------------------
     var checkOldList = confirm('Apakah anda ingin melanjutkan list lama? ');
@@ -123,7 +129,13 @@ document.addEventListener("DOMContentLoaded",function(event) {
         alert("Please enter all candidates name one by one into the prompt window after");
         addPlayer(playerList);
         localStorage.setItem("playerList", JSON.stringify(playerList));
-        var setTimer = prompt("How many seconds do you wish to set your timer?");
+        var numOnly = /\d/;
+        while (numOnly.test(setTimer) == false) {
+            var setTimer = prompt("How many seconds do you wish to set your timer?");
+            if (numOnly.test(setTimer) == false) {
+                alert("Harus Angka");
+            };
+        };
         localStorage.setItem("setTimer",setTimer);
         addList();
         for (let index = 0; index < playerList.length; index++) {
