@@ -98,6 +98,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
         }else{
             popUp.style.display = "none";
             answerID = 0;
+            localStorage.clear();
             alert("Game Over!");
         }
     };
