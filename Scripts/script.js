@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
         var questionList = JSON.parse(localStorage.getItem("questionList") || []);
         loadList(playerList,answeredPlayerList);
         selectedPlayer = getRandom();
-        startGame();
+        startGame(selectedPlayer);
     }
     else{
         localStorage.clear();
