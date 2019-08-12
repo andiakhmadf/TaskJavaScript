@@ -19,14 +19,14 @@ document.addEventListener("DOMContentLoaded",function(event) {
         }
     };
 
-    function countTimer(timerSelector,setTimer) {
+    function countTimer(timerSelector,setTimer,selectedPlayer) {
         revert();
         var intervalSet = setInterval(function () {
             timerSelector.textContent = setTimer;
             --setTimer;
             if (setTimer < 0) {
                 clearInterval(intervalSet);
-                questionBegin();
+                questionBegin(selectedPlayer);
             }
         },1000);
     };
@@ -42,64 +42,12 @@ document.addEventListener("DOMContentLoaded",function(event) {
         pendingList.appendChild(ulPending);
     };
 
-    function questionBegin() {
+    function questionBegin(selectedPlayer) {
         popUp.style.display = "flex";
         var questionNumber = Math.floor(Math.random() * questionList.length);
-        var selectedPlayer = Math.floor(Math.random() * playerList.length);
         document.querySelector("#candidate").textContent = playerList[selectedPlayer].name;
-        
-        function benar(event) {
-            playerList[selectedPlayer].answer = "correct";
-            var passedPlayer = playerList[selectedPlayer];
-            answeredPlayerList.push(passedPlayer);
-            playerList.splice(selectedPlayer,1);
-            var liPassed = document.createElement('li');
-            liPassed.textContent = answeredPlayerList[answerID].name + " - " + answeredPlayerList[answerID].answer;
-            document.querySelector(".right-container ul").appendChild(liPassed);
-            document.querySelector(".left-container ul").children[selectedPlayer].remove();
-            answerID ++;
-            questionList.splice(questionNumber,1);
-            localStorage.setItem("playerList", JSON.stringify(playerList));
-            localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
-            localStorage.setItem("answerID",JSON.stringify(answerID));
-            localStorage.setItem("questionList",JSON.stringify(questionList));
-            event.preventDefault();
-            correct.removeEventListener("click",benar);
-            startGame();
-        };
-        function salah(event) {
-            playerList[selectedPlayer].answer = "wrong";
-            var passedPlayer = playerList[selectedPlayer];
-            answeredPlayerList.push(passedPlayer);
-            playerList.splice(selectedPlayer,1);
-            var liPassed = document.createElement('li');
-            liPassed.textContent = answeredPlayerList[answerID].name + " - " + answeredPlayerList[answerID].answer;
-            document.querySelector(".right-container ul").appendChild(liPassed);
-            document.querySelector(".left-container ul").children[selectedPlayer].remove();
-            answerID ++;
-            questionList.splice(questionNumber,1);
-            localStorage.setItem("playerList",JSON.stringify(playerList));
-            localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
-            localStorage.setItem("answerID",JSON.stringify(answerID));
-            localStorage.setItem("questionList",JSON.stringify(questionList));
-            event.preventDefault();
-            wrong.removeEventListener("click",salah);
-            startGame();
-        };
-
-        buttonAnswer.addEventListener("click",function (event) {
-            event.preventDefault();
-            document.querySelector(".sentence").style.display = "none";
-            buttonAnswer.style.display = "none";
-            questionText.style.display = "block";
-            correct.style.display = "inline-block";
-            wrong.style.display = "inline-block";
-            questionText.textContent = questionList[questionNumber];
-        });
-
-        correct.addEventListener("click",benar);
-
-        wrong.addEventListener("click",salah);
+        questionText.textContent = questionList[questionNumber];
+        questionList.splice(questionNumber,1);
     };
 
     function revert() {
@@ -137,9 +85,9 @@ document.addEventListener("DOMContentLoaded",function(event) {
         passedList.appendChild(ulPassed);
     }
 
-    function startGame() {
+    function startGame(selectedPlayer) {
         if (playerList.length != 0) {
-            countTimer(timerSelector,setTimer);
+            countTimer(timerSelector,setTimer,selectedPlayer);
         }else{
             popUp.style.display = "none";
             answerID = 0;
@@ -148,6 +96,12 @@ document.addEventListener("DOMContentLoaded",function(event) {
         
     };
 
+    function getRandom() {
+        var selectedPlayer = Math.floor(Math.random() * playerList.length);
+        return selectedPlayer;
+    }
+
+    // ---------------------------------- MAIN PROGRAM -------------------------------------------
     var checkOldList = confirm('Apakah anda ingin melanjutkan list lama? ');
     if (checkOldList == true && typeof (Storage) != undefined) {
         var setTimer = localStorage.getItem("setTimer");
@@ -156,6 +110,7 @@ document.addEventListener("DOMContentLoaded",function(event) {
         var answerID = JSON.parse(localStorage.getItem("answerID") || []);
         var questionList = JSON.parse(localStorage.getItem("questionList") || []);
         loadList(playerList,answeredPlayerList);
+        selectedPlayer = getRandom();
         startGame();
     }
     else{
@@ -167,13 +122,72 @@ document.addEventListener("DOMContentLoaded",function(event) {
         rightList();
         alert("Please enter all candidates name one by one into the prompt window after");
         addPlayer(playerList);
+        localStorage.setItem("playerList", JSON.stringify(playerList));
         var setTimer = prompt("How many seconds do you wish to set your timer?");
         localStorage.setItem("setTimer",setTimer);
         addList();
         for (let index = 0; index < playerList.length; index++) {
             questionList.push("Question "+index);
         }
-        startGame();
+        localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
+        localStorage.setItem("answerID",JSON.stringify(answerID));
+        localStorage.setItem("questionList",JSON.stringify(questionList));
+        selectedPlayer = getRandom();
+        startGame(selectedPlayer);
     }
+
+    correct.addEventListener("click",function(event) {
+        event.preventDefault();
+        playerList[selectedPlayer].answer = "correct";
+        var passedPlayer = playerList[selectedPlayer];
+        answeredPlayerList.push(passedPlayer);
+        playerList.splice(selectedPlayer,1);
+        var liPassed = document.createElement('li');
+        liPassed.textContent = answeredPlayerList[answerID].name + " - " + answeredPlayerList[answerID].answer;
+        document.querySelector(".right-container ul").appendChild(liPassed);
+        document.querySelector(".left-container ul").children[selectedPlayer].remove();
+        answerID ++;
+        localStorage.setItem("playerList", JSON.stringify(playerList));
+        localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
+        localStorage.setItem("answerID",JSON.stringify(answerID));
+        localStorage.setItem("questionList",JSON.stringify(questionList));
+        var checkIndex = true;
+        if (checkIndex == true) {
+            selectedPlayer = getRandom();
+            checkIndex = false;
+        }
+        startGame(selectedPlayer);
+    });
+
+    wrong.addEventListener("click",function(event) {
+        event.preventDefault();
+        playerList[selectedPlayer].answer = "wrong";
+        var passedPlayer = playerList[selectedPlayer];
+        answeredPlayerList.push(passedPlayer);
+        playerList.splice(selectedPlayer,1);
+        var liPassed = document.createElement('li');
+        liPassed.textContent = answeredPlayerList[answerID].name + " - " + answeredPlayerList[answerID].answer;
+        document.querySelector(".right-container ul").appendChild(liPassed);
+        document.querySelector(".left-container ul").children[selectedPlayer].remove();
+        answerID ++;
+        localStorage.setItem("playerList",JSON.stringify(playerList));
+        localStorage.setItem("answeredPlayerList",JSON.stringify(answeredPlayerList));
+        localStorage.setItem("answerID",JSON.stringify(answerID));
+        localStorage.setItem("questionList",JSON.stringify(questionList));
+        var checkIndex = true;
+        if (checkIndex == true) {
+            selectedPlayer = getRandom();
+            checkIndex = false;
+        }
+        startGame(selectedPlayer);
+    });
+
+    buttonAnswer.addEventListener("click",function (event) {
+        document.querySelector(".sentence").style.display = "none";
+        buttonAnswer.style.display = "none";
+        questionText.style.display = "block";
+        correct.style.display = "inline-block";
+        wrong.style.display = "inline-block";
+    });
 });
     
